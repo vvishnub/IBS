@@ -12,7 +12,7 @@ import { useRouter } from "expo-router";
 import { styles } from "./homeStyles";
 
 export default function HomeScreen() {
-  const { products, loading, error, refetch, search } = useProductViewModel();
+  const { products, loading, error, refetch, search, toggleFavorite } = useProductViewModel();
   const router = useRouter();
   const { width } = useWindowDimensions();
   return (
@@ -44,6 +44,7 @@ export default function HomeScreen() {
             <ProductCard
               product={item}
               onPress={() => router.push(`/details/${item.id}`)}
+              onToggleFavorite={toggleFavorite}
             />
           )}
         />

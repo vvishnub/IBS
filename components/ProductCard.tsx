@@ -10,9 +10,11 @@ import { styles } from "./productCardStyles";
 export const ProductCard = ({
   product,
   onPress,
+  onToggleFavorite,
 }: {
   product: Product;
-  onPress: () => void;
+  onPress?: () => void;
+  onToggleFavorite: (id: string) => void;
 }) => (
   <TouchableOpacity
     style={styles?.card}
@@ -24,12 +26,12 @@ export const ProductCard = ({
       style={styles?.favView}
       accessible
       accessibilityLabel={`Product: ${product?.name} added to favourites`}
-      onPress={() => {}}
+      onPress={() => onToggleFavorite(product.id)}
     >
       <IconSymbol
         size={30}
-        color={Colors?.light?.primary}
-        name="heart"
+        color={product.isFavorite ? Colors?.light?.error : Colors?.light?.primary}
+        name={product.isFavorite ? "heart.fill" : "heart"}
         style={styles?.favImage}
       />
     </TouchableOpacity>
