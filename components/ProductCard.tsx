@@ -3,6 +3,7 @@ import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { Product } from "@/types/product";
+import { Fontisto } from "@expo/vector-icons";
 import React from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { styles } from "./productCardStyles";
@@ -30,7 +31,9 @@ export const ProductCard = ({
     >
       <IconSymbol
         size={30}
-        color={product.isFavorite ? Colors?.light?.error : Colors?.light?.primary}
+        color={
+          product.isFavorite ? Colors?.light?.error : Colors?.light?.primary
+        }
         name={product.isFavorite ? "heart.fill" : "heart"}
         style={styles?.favImage}
       />
@@ -54,12 +57,7 @@ export const ProductCard = ({
         accessibilityLabel={`Product: ${product?.name} shared`}
         onPress={() => {}}
       >
-        <IconSymbol
-          size={20}
-          color={Colors?.light?.primary}
-          name="arrow.uturn.right"
-          style={styles?.favImage}
-        />
+        <Fontisto name="share-a" size={14} color={Colors.light.primary} />
       </TouchableOpacity>
     </ThemedView>
   </TouchableOpacity>

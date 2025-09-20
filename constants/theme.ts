@@ -12,6 +12,7 @@ export const Colors = {
     black: "#000000",
     transparent: "transparent",
     grey: "#888888",
+    white: "#FFFFFF",
     text: "#000000", // Text color for light mode
     background: "#F2F2F7", // Light background color
     tint: "#007AFF", // Primary color (iOS Blue)
@@ -26,6 +27,7 @@ export const Colors = {
     secondary: "#5856D6",
     transparent: "transparent",
     grey: "#888888",
+    white: "#FFFFFF",
     text: "#FFFFFF", // Text color for dark mode
     background: "#151718", // Dark background color
     tint: "#007AFF", // Primary color (iOS Blue) for dark mode

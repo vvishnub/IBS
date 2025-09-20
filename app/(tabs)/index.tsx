@@ -8,13 +8,23 @@ import { ProductCard } from "@/components/ProductCard";
 import { TextInputComponent } from "@/components/TextInputComponent";
 import { Colors } from "@/constants/theme";
 import { useProductViewModel } from "@/hooks/useProductViewModel";
+import { Product } from "@/types/product";
 import { useRouter } from "expo-router";
 import { styles } from "./homeStyles";
 
 export default function HomeScreen() {
-  const { products, loading, error, refetch, search, toggleFavorite } = useProductViewModel();
+  const { products, loading, error, refetch, search, toggleFavorite } =
+    useProductViewModel();
   const router = useRouter();
   const { width } = useWindowDimensions();
+
+  const handlePress = (product: Product) => {
+    router.push({
+      pathname: "/screens/ProductDetailsScreen",
+      params: { product: JSON.stringify(product) },
+    });
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{
@@ -43,7 +53,7 @@ export default function HomeScreen() {
           renderItem={({ item }) => (
             <ProductCard
               product={item}
-              onPress={() => router.push(`/details/${item.id}`)}
+              onPress={() => handlePress(item)}
               onToggleFavorite={toggleFavorite}
             />
           )}
