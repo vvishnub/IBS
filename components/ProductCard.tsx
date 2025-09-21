@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { Product } from "@/types/product";
+import { shareProduct } from "@/utils/shareProduct";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Image, TouchableOpacity } from "react-native";
@@ -54,7 +55,9 @@ export const ProductCard = ({
         style={styles?.favView}
         accessible
         accessibilityLabel={`Product: ${product?.name} shared`}
-        onPress={() => {}}
+        onPress={() => {
+          shareProduct(product);
+        }}
       >
         <Fontisto name="share-a" size={14} color={Colors.light.primary} />
       </TouchableOpacity>

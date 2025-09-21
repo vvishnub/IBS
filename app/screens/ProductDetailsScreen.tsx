@@ -4,35 +4,48 @@ import { ThemedView } from "@/components/themed-view";
 import { constants } from "@/constants/constants";
 import { Colors } from "@/constants/theme";
 import { useProductDetailsViewModel } from "@/hooks/useProductDetailsViewModel";
-import { Product } from "@/types/product";
+import { shareProduct } from "@/utils/shareProduct";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useEffect } from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Image, TouchableOpacity } from "react-native";
 import { styles } from "./productDetailsScreenStyles";
 
 export default function ProductDetailsScreen() {
-  const { product: productParam } = useLocalSearchParams();
-  if (!productParam) {
-    return (
-      <ThemedView style={styles.center}>
-        <ThemedText type="default">{constants?.NO_PRODUCT_FOUND}</ThemedText>
-      </ThemedView>
-    );
-  }
-
-  const product: Product = JSON.parse(productParam as string);
-  const { isInCart, isFavorite, addToCart, toggleFavorite, buyNow } =
-    useProductDetailsViewModel(product);
-
   const navigation = useNavigation();
 
+  const {
+    isInCart,
+    isFavorite,
+    addToCart,
+    toggleFavorite,
+    buyNow,
+    product,
+    loading,
+  } = useProductDetailsViewModel();
+
   useEffect(() => {
-    navigation.setOptions({
-      title: product.name,
-      headerBackTitleVisible: false,
-    });
-  }, [product.name]);
+    if (product) {
+      navigation.setOptions({
+        title: product.name,
+        headerBackTitleVisible: false,
+      });
+    }
+  }, [navigation, product]);
+
+  if (loading || !product) {
+    if (!product) {
+      return (
+        <ThemedView style={styles.center}>
+          {loading ? (
+            <ActivityIndicator size="small" />
+          ) : (
+            <ThemedText type="default">{constants.NO_PRODUCT_FOUND}</ThemedText>
+          )}
+        </ThemedView>
+      );
+    }
+  }
 
   const BottomComponent = () => {
     return (
@@ -60,7 +73,7 @@ export default function ProductDetailsScreen() {
         <TouchableOpacity
           style={styles?.favView}
           accessible
-          accessibilityLabel={`Product: ${product.name} ${
+          accessibilityLabel={`Product: ${product?.name} ${
             isFavorite ? "remove from" : "add to"
           } favourites`}
           onPress={toggleFavorite}
@@ -79,17 +92,21 @@ export default function ProductDetailsScreen() {
         />
         <ThemedView style={styles.header}>
           <ThemedText type="default" style={styles.name}>
-            {product.name}
+            {product?.name}
           </ThemedText>
         </ThemedView>
         <ThemedText type="default" style={styles.description}>
-          {product.description}
+          {product?.description}
         </ThemedText>
         <ThemedView style={styles.header}>
           <ThemedText type="default" style={styles.price}>
-            ${product.price.toFixed(2)}
+            ${product?.price?.toFixed(2)}
           </ThemedText>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              shareProduct(product);
+            }}
+          >
             <Fontisto name="share-a" size={20} color={Colors.light.primary} />
           </TouchableOpacity>
         </ThemedView>

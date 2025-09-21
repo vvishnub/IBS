@@ -27,10 +27,7 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((item: Product) => item.id, []);
   const handlePress = (product: Product) => {
-    router.push({
-      pathname: "/screens/ProductDetailsScreen",
-      params: { product: JSON.stringify(product) },
-    });
+    router.push(`/product/${product.id}`);
   };
   const memoizedData = useMemo(() => products, [products]);
 
