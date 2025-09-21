@@ -2,19 +2,122 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+## Getting Started
 
-1. Install dependencies
+### 1. Clone the repo
 
-   ```bash
-   npm install
-   ```
+\`\`\`bash
+git clone https://github.com/your-username/myshoplite.git
+cd myshoplite
+\`\`\`
 
-2. Start the app
+### 2. Install dependencies
 
-   ```bash
-   npx expo start
-   ```
+\`\`\`bash
+npm install
+\`\`\`
+
+This installs:
+
+- React Native core packages
+- Expo Router and navigation
+- Reanimated and gesture handler
+- Vector icons and theming
+- Testing libraries
+
+### 3. Run the app
+
+#### iOS
+
+\`\`\`bash
+npx expo run:ios
+\`\`\`
+
+#### Android
+
+\`\`\`bash
+npx expo run:android
+\`\`\`
+
+#### Web (for layout testing only)
+
+\`\`\`bash
+npm run web
+\`\`\`
+
+> Deep linking via \`ibscart://\` does **not** work in Expo Go or Web. You must use a development build.
+
+---
+
+## Deep Linking
+
+### URI Format
+
+\`\`\`
+ibscart://product/:id
+\`\`\`
+
+Example:
+
+\`\`\`
+ibscart://product/1
+\`\`\`
+
+### Test Deep Link
+
+\`\`\`bash
+npx uri-scheme open ibscart://product/1 --ios
+npx uri-scheme open ibscart://product/1 --android
+\`\`\`
+
+> Make sure the app is installed and opened at least once before testing.
+
+---
+
+## Sharing
+
+Native share logic is located in \`utils/shareProduct.ts\`.
+
+\`\`\`ts
+shareProduct(product);
+\`\`\`
+
+This shares:
+
+- Product name
+- Deep link (\`ibscart://product/:id\`)
+
+
+## Technical Decisions & Architecture
+
+### State Management
+
+- Local state via React hooks
+- Persistent state via AsyncStorage
+- No external state libraries for simplicity
+
+### Component Architecture
+
+- Split into reusable atomic components
+- Screens use ViewModel + Logic hooks for separation of concerns
+
+###  Data Persistence
+
+- Favorites and cart stored in AsyncStorage
+- Future-ready for backend integration
+
+### ⚡ Performance
+
+- Lazy loading of screens
+- Reanimated for smooth animations
+- Avoids nested VirtualizedLists
+
+###  Security
+
+- No sensitive data stored locally
+- URI scheme avoids exposing user data
+- Ready for auth integration
+
 
 In the output, you'll find options to open the app in a
 
