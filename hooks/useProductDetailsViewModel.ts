@@ -1,3 +1,4 @@
+import { useFavorites } from "@/context/FavoritesContext";
 import { Product } from "@/types/product";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ const CART_KEY = "CART_PRODUCTS";
 
 export const useProductDetailsViewModel = (product: Product) => {
   const [isInCart, setIsInCart] = useState(false);
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     const checkCart = async () => {
@@ -29,16 +31,22 @@ export const useProductDetailsViewModel = (product: Product) => {
     const updated = [...cart, product];
     await AsyncStorage.setItem(CART_KEY, JSON.stringify(updated));
     setIsInCart(true);
-    Alert.alert(
-      "Added to Cart",
-      `${product.name} has been added to your cart.`
-    );
+    Alert.alert("Added to Cart", `${product.name} has been added to your cart.`);
+  };
+
+  const toggleFavorite = () => {
+    isFavorite(product.id) ? removeFavorite(product.id) : addFavorite(product);
   };
 
   const buyNow = () => {
     Alert.alert("Purchase Initiated", `Buying ${product.name}...`);
-    // You can navigate to a checkout screen or trigger payment flow here
   };
 
-  return { isInCart, addToCart, buyNow };
+  return {
+    isInCart,
+    isFavorite: isFavorite(product.id),
+    toggleFavorite,
+    addToCart,
+    buyNow,
+  };
 };

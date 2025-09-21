@@ -6,24 +6,33 @@ import { Loader } from "@/components/loader";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ProductCard } from "@/components/ProductCard";
 import { TextInputComponent } from "@/components/TextInputComponent";
+import { constants } from "@/constants/constants";
 import { Colors } from "@/constants/theme";
 import { useProductViewModel } from "@/hooks/useProductViewModel";
 import { Product } from "@/types/product";
 import { useRouter } from "expo-router";
+import { useCallback, useMemo } from "react";
 import { styles } from "./homeStyles";
 
 export default function HomeScreen() {
-  const { products, loading, error, refetch, search, toggleFavorite } =
-    useProductViewModel();
+  const {
+    products,
+    loading,
+    refetch,
+    search,
+    toggleFavorite,
+  } = useProductViewModel();
   const router = useRouter();
   const { width } = useWindowDimensions();
 
+  const keyExtractor = useCallback((item: Product) => item.id, []);
   const handlePress = (product: Product) => {
     router.push({
       pathname: "/screens/ProductDetailsScreen",
       params: { product: JSON.stringify(product) },
     });
   };
+  const memoizedData = useMemo(() => products, [products]);
 
   return (
     <ParallaxScrollView
@@ -38,16 +47,18 @@ export default function HomeScreen() {
         />
       }
       hearderText="Welcome to IBS Cart"
+      refreshing={loading}
+      onRefresh={refetch}
     >
       <TextInputComponent type="search" onSearch={search} />
 
       {loading ? (
         <Loader />
       ) : products.length === 0 ? (
-        <EmptyState />
+        <EmptyState message={constants?.NO_PRODUCT_FOUND} />
       ) : (
         <FlatList
-          data={products}
+          data={memoizedData}
           key={width > 600 ? "2col" : "1col"}
           numColumns={width > 600 ? 2 : 1}
           renderItem={({ item }) => (
@@ -57,6 +68,14 @@ export default function HomeScreen() {
               onToggleFavorite={toggleFavorite}
             />
           )}
+          keyExtractor={keyExtractor}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          removeClippedSubviews={false}
         />
       )}
     </ParallaxScrollView>

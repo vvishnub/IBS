@@ -13,12 +13,25 @@ import { styles } from "./productDetailsScreenStyles";
 
 export default function ProductDetailsScreen() {
   const { product: productParam } = useLocalSearchParams();
+  if (!productParam) {
+    return (
+      <ThemedView style={styles.center}>
+        <ThemedText type="default">{constants?.NO_PRODUCT_FOUND}</ThemedText>
+      </ThemedView>
+    );
+  }
+
   const product: Product = JSON.parse(productParam as string);
-  const { addToCart, buyNow } = useProductDetailsViewModel(product);
+  const { isInCart, isFavorite, addToCart, toggleFavorite, buyNow } =
+    useProductDetailsViewModel(product);
+
   const navigation = useNavigation();
 
   useEffect(() => {
-    navigation.setOptions({ title: product.name });
+    navigation.setOptions({
+      title: product.name,
+      headerBackTitleVisible: false,
+    });
   }, [product.name]);
 
   const BottomComponent = () => {
@@ -27,7 +40,7 @@ export default function ProductDetailsScreen() {
         <TouchableOpacity style={styles.button} onPress={addToCart}>
           <Ionicons name="cart" size={20} color={Colors.light.white} />
           <ThemedText type="default" style={styles.buttonText}>
-            {constants?.ADD_TO_CART}
+            {isInCart ? constants?.ITEM_IN_CART : constants.ADD_TO_CART}
           </ThemedText>
         </TouchableOpacity>
 
@@ -44,8 +57,23 @@ export default function ProductDetailsScreen() {
   return (
     <>
       <ScrollViewLayout bottomComponent={<BottomComponent />}>
+        <TouchableOpacity
+          style={styles?.favView}
+          accessible
+          accessibilityLabel={`Product: ${product.name} ${
+            isFavorite ? "remove from" : "add to"
+          } favourites`}
+          onPress={toggleFavorite}
+        >
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={30}
+            color={isFavorite ? Colors?.light?.error : Colors?.light?.primary}
+            style={styles.favImage}
+          />
+        </TouchableOpacity>
         <Image
-          source={{ uri: product.image }}
+          source={{ uri: product?.image }}
           style={styles.image}
           resizeMode="contain"
         />

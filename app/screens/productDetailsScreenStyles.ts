@@ -2,14 +2,11 @@ import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  wrapper: { flex: 1, backgroundColor: Colors.light.white },
-  container: { padding: 16, paddingBottom: 100 },
   image: { width: "100%", height: 300, borderRadius: 8 },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 16,
   },
   name: { fontSize: 20, fontWeight: "bold", color: Colors.light.text },
   price: { fontSize: 18, color: Colors.light.secondary, marginVertical: 8 },
@@ -29,6 +26,7 @@ export const styles = StyleSheet.create({
   button: {
     width: "45%",
     flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.light.primary,
     paddingVertical: 10,
@@ -39,5 +37,23 @@ export const styles = StyleSheet.create({
     color: Colors.light.white,
     fontSize: 16,
     marginLeft: 8,
+  },
+  favView: {
+    position: "absolute",
+    zIndex: 1,
+    right: 10,
+    top: 10,
+    backgroundColor: Colors.light.background,
+    borderRadius: 20,
+    padding: 5,
+  },
+  favImage: {
+    alignSelf: "center",
+  },
+  center: {
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

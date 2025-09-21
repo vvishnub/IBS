@@ -1,10 +1,13 @@
-import { constants } from "@/constants/constants";
 import React from "react";
 import { Text, View } from "react-native";
 import { styles } from "./EmptyStateStyles";
 
-export const EmptyState = () => (
+type EmptyStateProps = {
+  message?: string;
+};
+
+export const EmptyState = ({ message = "" }: EmptyStateProps) => (
   <View style={styles.container}>
-    <Text style={styles.text}>{constants?.NO_PRODUCT_FOUND}</Text>
+    <Text style={styles.text}>{message}</Text>
   </View>
 );

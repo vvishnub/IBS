@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
     marginVertical: 8,
   },
   favImage: {
-    color: Colors.light.primary,
     alignSelf: "center",
   },
   favView: {
