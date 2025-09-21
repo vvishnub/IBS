@@ -8,7 +8,12 @@ import { shareProduct } from "@/utils/shareProduct";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, Image, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ListRenderItemInfo,
+  TouchableOpacity,
+} from "react-native";
 import { styles } from "./productDetailsScreenStyles";
 
 export default function ProductDetailsScreen() {
@@ -69,7 +74,15 @@ export default function ProductDetailsScreen() {
 
   return (
     <>
-      <ScrollViewLayout bottomComponent={<BottomComponent />}>
+      <ScrollViewLayout
+        bottomComponent={<BottomComponent />}
+        data={[]}
+        renderItem={function (
+          info: ListRenderItemInfo<unknown>
+        ): React.ReactElement | null {
+          throw new Error("Function not implemented.");
+        }}
+      >
         <TouchableOpacity
           style={styles?.favView}
           accessible

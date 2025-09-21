@@ -1,5 +1,9 @@
 import { Image } from "expo-image";
-import { FlatList, useWindowDimensions } from "react-native";
+import {
+  FlatList,
+  ListRenderItemInfo,
+  useWindowDimensions,
+} from "react-native";
 
 import { EmptyState } from "@/components/EmptyState";
 import { Loader } from "@/components/loader";
@@ -15,13 +19,8 @@ import { useCallback, useMemo } from "react";
 import { styles } from "./homeStyles";
 
 export default function HomeScreen() {
-  const {
-    products,
-    loading,
-    refetch,
-    search,
-    toggleFavorite,
-  } = useProductViewModel();
+  const { products, loading, refetch, search, toggleFavorite } =
+    useProductViewModel();
   const router = useRouter();
   const { width } = useWindowDimensions();
 
@@ -46,6 +45,12 @@ export default function HomeScreen() {
       hearderText="Welcome to IBS Cart"
       refreshing={loading}
       onRefresh={refetch}
+      data={[]}
+      renderItem={function (
+        info: ListRenderItemInfo<unknown>
+      ): React.ReactElement | null {
+        throw new Error("Function not implemented.");
+      }}
     >
       <TextInputComponent type="search" onSearch={search} />
 

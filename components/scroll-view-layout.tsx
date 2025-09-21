@@ -1,44 +1,50 @@
+import { useThemeColor } from "@/hooks/use-theme-color";
 import type { PropsWithChildren } from "react";
-import { RefreshControl, StyleSheet } from "react-native";
+import { ListRenderItem, RefreshControl, StyleSheet } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useThemeColor } from "@/hooks/use-theme-color";
-
-type Props = PropsWithChildren<{
+type Props<T> = PropsWithChildren<{
+  data: T[];
+  renderItem: ListRenderItem<T>;
   bottomComponent?: React.ReactNode;
   edges?: string[];
   refreshing?: boolean;
   onRefresh?: () => void;
 }>;
 
-export default function ScrollViewLayout({
-  children,
+export default function FlatListLayout<T>({
+  data,
+  renderItem,
   bottomComponent,
+  children,
   edges,
   refreshing = false,
   onRefresh,
-}: Props) {
+}: Props<T>) {
   const backgroundColor = useThemeColor({}, "background");
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const listRef = useAnimatedRef<Animated.FlatList<T>>();
 
   return (
     <SafeAreaView
       style={styles.container}
       edges={["top", "left", "right", "bottom"]}
     >
-      <Animated.ScrollView
-        ref={scrollRef}
-        style={[styles?.scrollStyle, { backgroundColor }]}
-        scrollEventThrottle={16}
-        removeClippedSubviews={false}
+      <Animated.FlatList
+        ref={listRef}
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(_, idx) => idx.toString()}
+        ListHeaderComponent={children ? () => <>{children}</> : undefined}
+        contentContainerStyle={styles.scrollStyle}
+        style={{ backgroundColor }}
         showsVerticalScrollIndicator={false}
+        removeClippedSubviews={false}
+        scrollEventThrottle={16}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        {children}
-      </Animated.ScrollView>
+      />
       {bottomComponent}
     </SafeAreaView>
   );
@@ -48,5 +54,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollStyle: { flex: 1, padding: 20 },
+  scrollStyle: {
+    padding: 20,
+  },
 });

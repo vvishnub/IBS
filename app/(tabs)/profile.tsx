@@ -1,9 +1,9 @@
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { profileData } from "@/constants/dummyData";
 import { Colors, Fonts } from "@/constants/theme";
+import { ListRenderItemInfo } from "react-native";
 import { styles } from "./profileStyles";
 
 export default function TabTwoScreen() {
@@ -21,18 +21,22 @@ export default function TabTwoScreen() {
           style={styles.headerImage}
         />
       }
+      data={[]}
+      renderItem={function (
+        info: ListRenderItemInfo<unknown>
+      ): React.ReactElement | null {
+        throw new Error("Function not implemented.");
+      }}
     >
-      <ThemedView style={styles.titleContainer}>
         <ThemedText
           type="title"
           style={{
             fontFamily: Fonts.rounded,
+            alignSelf:'center'
           }}
         >
           {profileData?.fullName}
         </ThemedText>
-      </ThemedView>
-      <ThemedText>{profileData?.bio}</ThemedText>
     </ParallaxScrollView>
   );
 }

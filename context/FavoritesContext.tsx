@@ -48,10 +48,6 @@ export const FavoritesProvider = ({
     loadFavorites();
   }, [loadFavorites]);
 
-  useEffect(() => {
-    console.log("lllll", favorites);
-  }, [favorites]);
-
   const addFavorite = async (product: Product) => {
     try {
       const stored = await AsyncStorage.getItem(FAVORITES_KEY);

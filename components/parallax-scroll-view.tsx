@@ -1,5 +1,9 @@
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import type { PropsWithChildren, ReactElement } from "react";
-import { RefreshControl, StyleSheet, useWindowDimensions } from "react-native";
+import { ListRenderItem, RefreshControl, StyleSheet, useWindowDimensions } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -8,14 +12,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useThemeColor } from "@/hooks/use-theme-color";
-
 const HEADER_HEIGHT = 120;
 
-type Props = PropsWithChildren<{
+type Props<T> = PropsWithChildren<{
+  data: T[];
+  renderItem: ListRenderItem<T>;
   headerImage: ReactElement;
   headerBackgroundColor: { dark: string; light: string };
   hearderText?: string;
@@ -23,19 +24,22 @@ type Props = PropsWithChildren<{
   onRefresh?: () => void;
 }>;
 
-export default function ParallaxScrollView({
-  children,
+export default function ParallaxFlatListView<T>({
+  data,
+  renderItem,
   headerImage,
   headerBackgroundColor,
   hearderText,
   refreshing = false,
   onRefresh,
-}: Props) {
+  children
+}: Props<T>) {
   const backgroundColor = useThemeColor({}, "background");
   const colorScheme = useColorScheme() ?? "light";
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollOffset(scrollRef);
+  const listRef = useAnimatedRef<Animated.FlatList<T>>();
+  const scrollOffset = useScrollOffset(listRef);
   const { width } = useWindowDimensions();
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -59,8 +63,30 @@ export default function ParallaxScrollView({
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <Animated.ScrollView
-        ref={scrollRef}
+      <Animated.FlatList
+        ref={listRef}
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(_, idx) => idx.toString()}
+        ListHeaderComponent={
+          <Animated.View
+            style={[
+              styles.header,
+              { backgroundColor: headerBackgroundColor[colorScheme] },
+              headerAnimatedStyle,
+            ]}
+          >
+            {headerImage}
+            <ThemedText
+              type="title"
+              style={[styles.headerText, { left: width > 600 ? "8%" : "10%" }]}
+            >
+              {hearderText}
+            </ThemedText>
+          </Animated.View>
+        }
+        ListFooterComponent={<ThemedView style={styles.content}>{children}</ThemedView>}
+        contentContainerStyle={styles.content}
         style={{ backgroundColor, flex: 1 }}
         scrollEventThrottle={16}
         removeClippedSubviews={false}
@@ -68,24 +94,7 @@ export default function ParallaxScrollView({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        <Animated.View
-          style={[
-            styles.header,
-            { backgroundColor: headerBackgroundColor[colorScheme] },
-            headerAnimatedStyle,
-          ]}
-        >
-          {headerImage}
-          <ThemedText
-            type="title"
-            style={[styles.headerText, { left: width > 600 ? "8%" : "10%" }]}
-          >
-            {hearderText}
-          </ThemedText>
-        </Animated.View>
-        <ThemedView style={styles.content}>{children}</ThemedView>
-      </Animated.ScrollView>
+      />
     </SafeAreaView>
   );
 }
@@ -99,8 +108,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   content: {
-    flex: 1,
-    padding: 20,
+    padding: 12,
     gap: 16,
     overflow: "hidden",
   },

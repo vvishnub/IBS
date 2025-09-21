@@ -1,16 +1,20 @@
-import { FlatList, useWindowDimensions } from "react-native";
+import {
+  FlatList,
+  ListRenderItemInfo,
+  useWindowDimensions,
+} from "react-native";
 
 import { EmptyState } from "@/components/EmptyState";
 import { Loader } from "@/components/loader";
 import { ProductCard } from "@/components/ProductCard";
 import ScrollViewLayout from "@/components/scroll-view-layout";
 import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { constants } from "@/constants/constants";
 import { useFavoritesViewModel } from "@/hooks/useFavoritesViewModel";
 import { Product } from "@/types/product";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useMemo } from "react";
+import { styles } from "./productDetailsScreenStyles";
 
 export default function FavoritesScreen() {
   const { favorites, loading, removeFavorite, refreshFavorites } =
@@ -27,10 +31,7 @@ export default function FavoritesScreen() {
   );
 
   const handlePress = (product: Product) => {
-    router.push({
-      pathname: "/screens/ProductDetailsScreen",
-      params: { product: JSON.stringify(product) },
-    });
+    router.push(`/product/${product.id}`);
   };
 
   const handleToggleFavorite = useCallback(
@@ -46,10 +47,20 @@ export default function FavoritesScreen() {
   const numColumns = width > 600 ? 2 : 1;
 
   return (
-    <ScrollViewLayout refreshing={loading} onRefresh={refreshFavorites}>
-      <ThemedView>
-        <ThemedText type="subtitle">{constants?.FAVOURITES}</ThemedText>
-      </ThemedView>
+    <ScrollViewLayout
+      refreshing={loading}
+      onRefresh={refreshFavorites}
+      data={[]}
+      renderItem={function (
+        info: ListRenderItemInfo<unknown>
+      ): React.ReactElement | null {
+        throw new Error("Function not implemented.");
+      }}
+    >
+      <ThemedText type="subtitle" style={styles?.title}>
+        {constants?.FAVOURITES}
+      </ThemedText>
+
       {loading && favorites.length === 0 ? (
         <Loader />
       ) : favorites.length === 0 ? (
